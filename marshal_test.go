@@ -1,0 +1,36 @@
+package types
+
+import (
+	"reflect"
+	"testing"
+)
+
+func TestMarshal(t *testing.T) {
+	f := foo{
+		A: 1,
+		B: 2,
+		C: 3,
+		D: 4,
+		E: 5,
+		F: 6,
+		G: 7,
+		H: 8,
+	}
+	want := []byte{
+		0x01,
+		0x02,
+		0x00, 0x03,
+		0x00, 0x04,
+		0x00, 0x00, 0x00, 0x05,
+		0x00, 0x00, 0x00, 0x06,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08,
+	}
+	got, err := Marshal(&f)
+	if err != nil {
+		t.Errorf("marshal error:%v", err)
+	}
+	if !reflect.DeepEqual(want, got) {
+		t.Errorf("unexpected marshal result,want:%v,got:%v", want, got)
+	}
+}

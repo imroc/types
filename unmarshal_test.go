@@ -5,17 +5,18 @@ import (
 	"testing"
 )
 
+type foo struct {
+	A int8
+	B uint8
+	C int16
+	D uint16
+	E int32
+	F uint32
+	G int64
+	H uint64
+}
+
 func TestUnmarshal(t *testing.T) {
-	type foo struct {
-		A int8
-		B uint8
-		C int16
-		D uint16
-		E int32
-		F uint32
-		G int64
-		H uint64
-	}
 	data := []byte{
 		0x01,
 		0x02,
