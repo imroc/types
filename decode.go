@@ -93,6 +93,6 @@ func (d *Decoder) Decode(v interface{}) (err error) {
 
 // Decode decode the reader to specified struct
 func Decode(r io.Reader, v interface{}) (err error) {
-	d := NewDecoder(r, binary.BigEndian)
+	d := NewDecoder(r, defaultByteOrder)
 	return d.Decode(v)
 }

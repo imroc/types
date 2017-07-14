@@ -79,6 +79,6 @@ func (e *Encoder) Encode(v interface{}) (err error) {
 }
 
 func Encode(w io.Writer, v interface{}) error {
-	e := NewEncoder(w, binary.BigEndian)
+	e := NewEncoder(w, defaultByteOrder)
 	return e.Encode(v)
 }
