@@ -9,13 +9,20 @@ import (
 )
 
 type Decoder struct {
-	r io.Reader
+	r   io.Reader
+	enc binary.ByteOrder
 }
 
-func NewDecoder(r io.Reader) *Decoder {
-	return &Decoder{
+func NewDecoder(r io.Reader, littleEndian bool) *Decoder {
+	d := &Decoder{
 		r: r,
 	}
+	if littleEndian {
+		d.enc = binary.LittleEndian
+	} else {
+		d.enc = binary.BigEndian
+	}
+	return d
 }
 
 // Decode decode the reader to specified struct
@@ -64,22 +71,22 @@ func (d *Decoder) Decode(v interface{}) (err error) {
 			value = int8(b[0])
 		case reflect.Uint16:
 			b := getData(2)
-			value = binary.BigEndian.Uint16(b)
+			value = d.enc.Uint16(b)
 		case reflect.Int16:
 			b := getData(2)
-			value = int16(binary.BigEndian.Uint16(b))
+			value = int16(d.enc.Uint16(b))
 		case reflect.Uint32:
 			b := getData(4)
-			value = binary.BigEndian.Uint32(b)
+			value = d.enc.Uint32(b)
 		case reflect.Int32:
 			b := getData(4)
-			value = int32(binary.BigEndian.Uint32(b))
+			value = int32(d.enc.Uint32(b))
 		case reflect.Uint64:
 			b := getData(8)
-			value = binary.BigEndian.Uint64(b)
+			value = d.enc.Uint64(b)
 		case reflect.Int64:
 			b := getData(8)
-			value = int64(binary.BigEndian.Uint64(b))
+			value = int64(d.enc.Uint64(b))
 		default:
 			err = fmt.Errorf("types: unsupported field type:%s", f.Type().String())
 			return
@@ -91,6 +98,6 @@ func (d *Decoder) Decode(v interface{}) (err error) {
 
 // Decode decode the reader to specified struct
 func Decode(r io.Reader, v interface{}) (err error) {
-	d := NewDecoder(r)
+	d := NewDecoder(r, false)
 	return d.Decode(v)
 }

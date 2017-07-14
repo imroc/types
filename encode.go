@@ -9,13 +9,20 @@ import (
 )
 
 type Encoder struct {
-	w io.Writer
+	w   io.Writer
+	enc binary.ByteOrder
 }
 
-func NewEncoder(w io.Writer) *Encoder {
-	return &Encoder{
+func NewEncoder(w io.Writer, littleEndian bool) *Encoder {
+	e := &Encoder{
 		w: w,
 	}
+	if littleEndian {
+		e.enc = binary.LittleEndian
+	} else {
+		e.enc = binary.BigEndian
+	}
+	return e
 }
 
 func (e *Encoder) Encode(v interface{}) (err error) {
@@ -77,6 +84,6 @@ func (e *Encoder) Encode(v interface{}) (err error) {
 }
 
 func Encode(w io.Writer, v interface{}) error {
-	e := NewEncoder(w)
+	e := NewEncoder(w, false)
 	return e.Encode(v)
 }
