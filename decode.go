@@ -13,16 +13,11 @@ type Decoder struct {
 	enc binary.ByteOrder
 }
 
-func NewDecoder(r io.Reader, littleEndian bool) *Decoder {
-	d := &Decoder{
-		r: r,
+func NewDecoder(r io.Reader, enc binary.ByteOrder) *Decoder {
+	return &Decoder{
+		r:   r,
+		enc: enc,
 	}
-	if littleEndian {
-		d.enc = binary.LittleEndian
-	} else {
-		d.enc = binary.BigEndian
-	}
-	return d
 }
 
 // Decode decode the reader to specified struct
@@ -98,6 +93,6 @@ func (d *Decoder) Decode(v interface{}) (err error) {
 
 // Decode decode the reader to specified struct
 func Decode(r io.Reader, v interface{}) (err error) {
-	d := NewDecoder(r, false)
+	d := NewDecoder(r, binary.BigEndian)
 	return d.Decode(v)
 }
